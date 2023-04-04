@@ -13,8 +13,10 @@ router.post("/", async (req, res) => {
   if (!req.body.message)
     res.status(400).json({ message: "Veuillez ajouter un message" });
   const newPost = await Post.create({
-    message: req.body.message,
-    author: req.body.author,
+    posts: {
+      message: req.body.message,
+      author: req.body.author,
+    },
   });
   res.status(200).json({ message: newPost });
 });
@@ -37,13 +39,31 @@ router.delete("/:id", async (req, res) => {
 });
 
 router.patch("/like-post/:id", async (req, res) => {
-  console.log(req.params);
-  res.json({ message: "LIKE" });
+  try {
+    console.log(req.params);
+    const post = await Post.findByIdAndUpdate(
+      req.params.id,
+      { $addToSet: { likes: req.body.userId } },
+      { new: true }
+    );
+    res.status(200).json(post);
+  } catch (error) {
+    res.status(400).json(error);
+  }
 });
 
 router.patch("/dislike-post/:id", async (req, res) => {
-  console.log(req.params);
-  res.json({ message: "DISLIKE" });
+  try {
+    console.log(req.params);
+    const post = await Post.findByIdAndUpdate(
+      req.params.id,
+      { $pull: { likes: req.body.userId } },
+      { new: true }
+    );
+    res.status(200).json(post);
+  } catch (error) {
+    res.status(400).json(error);
+  }
 });
 
 module.exports = router;
