@@ -1,22 +1,29 @@
 // import dependencies
 const express = require("express");
-const connectDB = require("./Config/db");
+const cors = require("cors");
 require("dotenv").config();
 
-// connect to DB
-connectDB();
+//import configs
+const connectDB = require("./Config/db");
+const cloudinaryConnect = require("./Config/cloudinary");
 
 // variable declarations
 const app = express();
-const port = 5000;
 
+//Middlewares
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use("/post", require("./Routes/posts"));
+app.use("/user", require("./Routes/signuplogin"));
 
-app.use("/post", require("./Routes/PostRoutes"));
+// connect to DB
+connectDB();
+//connect to cloudinary
+cloudinaryConnect();
 
 // server is listening on port
-app.listen(port, () => console.log(`Server has started on port ${port}`));
+app.listen(process.env.PORT, () => console.log(`Server has started`));
 
 // pour les routes inexistantes
 app.all("*", (req, res) => {
