@@ -99,12 +99,12 @@ router.post("/login", async (req, res) => {
           account: loginUser.account,
         });
       } else {
-        res.json({
+        res.status(401).json({
           error: "unauthorized",
         });
       }
     } else {
-      res.json({
+      res.status(400).json({
         error: "invalid email",
       });
     }
