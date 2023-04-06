@@ -12,9 +12,28 @@ const convertToBase64 = (file) => {
   return `data:${file.mimetype};base64,${file.data.toString("base64")}`;
 };
 
+router.post("/user", async (req, res) => {
+  try {
+    console.log(req.body);
+    const user = await User.findOne({ token: req.body.token });
+    if (user) {
+      res.status(200).json({
+        _id: user._id,
+        token: user.token,
+        account: user.account,
+      });
+    } else {
+      res.status(409).json({ message: "compte pas trouvé" });
+    }
+  } catch (error) {
+    console.log(error.message);
+    res.status(400).json({ message: error.message });
+  }
+});
+
 router.post("/signup", fileUpload(), async (req, res) => {
   try {
-    // console.log(req.body);
+    console.log(req.body);
     // console.log(req.files?.picture);
     const user = await User.findOne({ email: req.body.email });
     const avatar = req.files?.picture;

@@ -7,6 +7,7 @@ const router = express.Router();
 router.get("/", async (req, res) => {
   try {
     const posts = await Post.find();
+    // const postsDetails = await posts.populate("user");
     res.status(200).json(posts);
   } catch (error) {
     console.log(error.message);
