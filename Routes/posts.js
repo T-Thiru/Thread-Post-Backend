@@ -59,10 +59,13 @@ router.put("/:id", async (req, res) => {
   try {
     console.log(req.params);
     const post = await Post.findById(req.params.id);
-    if (!post) res.status(400).json({ message: "ce post n'existe pas" });
-    post.message = req.body.message;
-    await post.save();
-    res.status(200).json(post);
+    if (!post) {
+      res.status(400).json({ message: "ce post n'existe pas" });
+    } else {
+      post.message = req.body.message;
+      await post.save();
+      res.status(200).json(post);
+    }
   } catch (error) {
     console.log(error.message);
     res.status(400).json({ message: error.message });
